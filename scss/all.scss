@@ -1,0 +1,254 @@
+@import "functions";
+@import "mixins";
+@import "variables";
+@import "bootstrap";
+
+
+* {
+    margin: 0;
+    padding: 0;
+  
+}
+
+$color_darkGray: #333;
+
+body {
+    background-color: $bikegray;
+}
+
+.form-group {
+    font-size: 18px;
+    letter-spacing: 3px;
+
+    .form-control {
+        border-radius: 0;
+        border: 0;
+        background-color: rgba(0, 0, 0, 0.2);
+        color: $bikegray;
+
+        &:focus {
+            border: 3px solid $bikeblue;
+        }
+    }
+}
+
+.side_wrapper {
+    background-image: linear-gradient(0deg, $bikeblue, $bikegreen);
+}
+
+//side menu---------------------------------------------------
+
+.side_menu {
+    min-height: 98vh;
+
+    .logo {
+        margin: 15px 0;
+        font-weight: 900;
+        text-align: center;
+        color: #fff;
+    }
+
+    .credit {
+        height: 50px;
+
+        color: $bikegray;
+
+        text-align: center;
+        line-height: 10px;
+
+        a {
+            text-decoration: none;
+            color: $bikegray;
+        }
+
+        .fa-pen-square {
+            margin-right: 3px;
+        }
+    }
+}
+
+//vue transition-group animation--------------
+
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity .5s;
+}
+
+.fade-enter,
+.fade-leave-to
+
+/* .fade-leave-active below version 2.1.8 */
+    {
+    opacity: 0;
+}
+
+
+
+.filter_lists {
+    padding-left: 0;
+
+}
+
+.filter_result {
+    color: white;
+    letter-spacing: 1px;
+
+    .count {
+        color: $bikegreen;
+        font-size: 30px;
+    }
+
+}
+
+
+.loading {
+    position: absolute;
+    display: block;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: $bikegray;
+    overflow: hidden;
+    z-index: 1021;
+
+    .icon {
+        position: absolute;
+        top: 35%;
+        left: 30%;
+        animation: goBike 4s backwards infinite linear;
+
+
+        @keyframes goBike {
+            0% {
+                left: 30%;
+            }
+
+            10% {
+                top: 36%;
+            }
+
+            15% {
+                top: 35%;
+            }
+
+            20% {
+                top: 36%;
+            }
+
+            25% {
+                top: 35%;
+            }
+
+            40% {
+                top: 36%;
+            }
+
+            45% {
+                top: 35%;
+            }
+
+            50% {
+                top: 36%;
+            }
+
+            55% {
+                top: 35%;
+            }
+
+            70% {
+                top: 36%;
+            }
+
+            75% {
+                top: 35%;
+            }
+
+            80% {
+                top: 36%;
+            }
+
+            100% {
+                left: 80%;
+            }
+        }
+
+
+
+        .fa-bicycle {
+            font-size: 50px;
+        }
+
+        span {
+            font-size: 45px;
+        }
+    }
+
+
+
+}
+
+
+#map {
+
+    height: 80vh;
+    // width: 100%;
+
+
+
+}
+
+.list_item {
+
+    background-color: white;
+    cursor: pointer;
+    margin-bottom: 20px;
+    position: relative;
+
+    h2 {
+        font-size: 25px;
+
+
+    }
+
+    hr {
+        width: 95%;
+        border-top: 2px solid #ccc;
+    }
+
+    .cover {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        left: 0;
+        top: 0;
+        opacity: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        color: $bikegray;
+        background-image: linear-gradient(45deg, $bikeblue, $bikegreen);
+        transition: .5s;
+
+        .fa-map {
+            transform: scale(.5);
+            transition: .3s .1s;
+        }
+
+        &:hover {
+            opacity: .9;
+
+            .fa-map {
+                font-size: 34px;
+                transform: scale(1);
+            }
+        }
+    }
+
+
+    p {
+        font-size: 20px;
+    }
+
+}

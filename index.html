@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Youbike Search</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css"
+        integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/bootstrap.css">
+    <link rel="stylesheet" href="./css/all.css">
+</head>
+
+<body>
+    <div class="wrap" id="app">
+        <transition name="fade">
+            <div class="loading d-flex justify-content-center align-items-center flex-column" v-if="loading">
+                <div class="icon">
+                    <span class="text-bikegreen">...</span>
+                    <i class="fas fa-bicycle text-bikegreen"></i>
+                </div>
+                <div class="info">
+                    <h2 class="text-bikeblue">資料載入中...</h2>
+                </div>
+            </div>
+        </transition>
+
+
+        <div class="container">
+            <div class="row">
+                <div class="side_wrapper col-md-4">
+                    <div class="side_menu sticky-top">
+                        <h1 class="logo">YOUBIKE GO !</h1>
+                        <div class="selectArea" :class="{active:filterOpen}">
+
+                            <div class="form-group">
+                                <label for="">區域名稱：</label>
+                                <select class="form-control" name="choosePos" v-model='filterInputData.sarea'>
+                                    <option disabled>--</option>
+                                    <option v-for="area in getArea">{{area}}</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="">站點名稱：</label>
+                                <select class="form-control" name="choosePos" v-model='filterInputData.sna'>
+                                    <option disabled>--</option>
+                                    <option v-for="site in getSite">{{site}}</option>
+                                </select>
+                            </div>
+
+                        </div>
+                        <div class="credit">
+                            <p><i class="fas fa-pen-square"></i>Created by Kang Giok-Ki </p>
+                            <span>資料來源：<a
+                                    href="https://data.ntpc.gov.tw/od/detail?oid=71CD1490-A2DF-4198-BEF1-318479775E8A">NTCG
+                                    API</a></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-8 col-lg-7 offset-lg-1 content pt-5">
+                    <h5 class="filter_result" v-if="filterMode">有<span class="count">{{filterData.length}}</span>項結果符合
+                    </h5>
+                    <!-- TODO:過濾模式列表 -->
+                    <transition-group class="filter_lists" name="fade" tag="ul">
+                        <li class="list_item" v-if="filterMode" v-for="data in filterData" :key="data.sno">
+                            <h2 class="p-3 mb-0"><i class="fas fa-bicycle text-bikegreen mr-2"></i>{{data.sna}}</h2>
+                            <hr class="ml-3 mt-0">
+                            <div class="content px-3 py-2">
+                                <p> <i class="fas fa-map-marker-alt text-danger mr-2"></i> Location：{{data.ar}}</p>
+                                <p><i
+                                        class="fas fa-arrow-alt-circle-right text-bikeblue mr-2"></i>Available：{{data.sbi}}
+                                </p>
+                            </div>
+                            <div class="cover" v-on:click="showMap(data)" data-toggle="modal"
+                                data-target="#googleMapModal">
+                                <i class="fas fa-map"></i>
+                                <h4>Google 位置</h4>
+                            </div>
+                        </li>
+
+                    </transition-group>
+                    <!-- TODO:正常模式列表 -->
+                    <transition-group class="filter_lists" name="fade" tag="ul">
+                        <li class="list_item" v-if="!filterMode" v-for="data in pageData[currentPage-1]"
+                            :key="data.sno">
+                            <h2 class="p-3 mb-0"><i class="fas fa-bicycle text-bikegreen mr-2"></i>{{data.sna}}</h2>
+                            <hr class="ml-3 mt-0">
+                            <div class="content px-3 py-2">
+                                <p> <i class="fas fa-map-marker-alt text-danger mr-2"></i> Location：{{data.ar}}</p>
+                                <p><i
+                                        class="fas fa-arrow-alt-circle-right text-bikeblue mr-2"></i>Available：{{data.sbi}}
+                                </p>
+                            </div>
+                            <div class="cover" v-on:click="showMap(data)" data-toggle="modal"
+                                data-target="#googleMapModal">
+                                <i class="fas fa-map"></i>
+                                <h4>Google 位置</h4>
+                            </div>
+                        </li>
+
+                    </transition-group>
+                    <!-- TODO:分頁 -->
+                    <nav v-if="!filterMode">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item" :class="{disabled: currentPage &lt;= 1}">
+                                <a class="page-link" href="#" v-on:click.prevent="movePage('prev')"><span
+                                        aria-hidden="true">«</span><span class="sr-only">Previous</span></a>
+                            </li>
+                            <li class="page-item" v-for="(num,i) in showPages"
+                                :class="{active: currentPage == (num+1)}">
+                                <a class="page-link" href="#" v-on:click.prevent="movePage(num+1)">{{num+1}}</a>
+                            </li>
+                            <li class="page-item" :class="{disabled: currentPage == pagination.length}">
+                                <a class="page-link" href="#" v-on:click.prevent="movePage('next')"><span
+                                        aria-hidden="true">»</span><span class="sr-only">Next</span></a>
+                            </li>
+                        </ul>
+                    </nav>
+                    <!-- TODO:地圖 -->
+
+
+                </div>
+
+
+
+            </div>
+
+
+
+        </div>
+        <div class="modal fade" id="googleMapModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-md" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{{modalSna}}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">x</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="map"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous">
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDW8fPLkwpjw1Vurz_TL5XeLRttz8JEIBY" async defer>
+    </script>
+    <script src="./js/all.js"></script>
+
+</body>
+
+</html>
